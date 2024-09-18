@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>TestOTomasyonuCucumberProject</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.20.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.10.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>7.15.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.16.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+
+
+        <!-- Cucumber-extent report için eklentiler -->
+        <dependency>
+            <groupId>tech.grasshopper</groupId>
+            <artifactId>extentreports-cucumber7-adapter</artifactId>
+            <version>1.14.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>5.0.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+            </plugin>
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.7.5</version>
+                <executions>
+                    <execution>
+                        <id>execution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>cucumber-jvm-example</projectName>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <inputDirectory>${project.build.directory}</inputDirectory>
+                            <jsonFiles>
+                                <param>**/json-reports/*.json</param>
+                            </jsonFiles>
+                            <classificationFiles>
+                                <param>sample.properties</param>
+                                <param>other.properties</param>
+                            </classificationFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> <!-- Raporlama yapiyor -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <skipTests>false</skipTests>
+                    <!--                    <includes>-->
+                    <!--                        <include>**/runners/*Runner*.java</include>-->
+                    <!--                        &lt;!&ndash; runners package altinda-->
+                    <!--                             calismasini istedigimiz Runner'larin-->
+                    <!--                             isimlerindeki ortak bolumu yaziyoruz&ndash;&gt;-->
+                    <!--                    </includes>-->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>xmlFiles/RunnerParallelsmoke.xml</suiteXmlFile>
+                        <suiteXmlFile>xmlFiles/RunnerParallelregression.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>  <!-- bir method fail olsa bile geriye kalan method'larin calismaya devam etmesi icin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <!--Uygulamanın dilini İngilizce olarak ayarlar. Bu, dilin İngilizce olmasını sağlayarak, uygulamanın veya raporların İngilizce dilinde görüntülenmesini sağlar.  -->
+                    <argLine>-Duser.language=en</argLine>
+                    <argLine>-Xmx1024m</argLine>
+                    <argLine>-XX:MaxPermSize=256m</argLine>
+                    <!--Dosya kodlamasını UTF-8 olarak ayarlar. Bu, uygulamanın dosyaları UTF-8 kodlamasıyla okumasını ve yazmasını sağlar, böylece uluslararası karakterler doğru bir şekilde işlenir. -->
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <properties>
+                        <property>
+                            <name>dataproviderthreadcount</name>
+                            <value>2</value>
+                        </property>
+                        <property>
+                            <name>parallel</name>
+                            <value>methods</value>
+                        </property>
+                        <property>
+                            <name>suitethreadpoolsize
+                            </name>  <!--forkcount gibi çalışıyor, bir çalıştırmada kaç adet suite yani xml dosyası çalışacağını ayarlıyor -->
+                            <value>3</value>
+                        </property>
+                    </properties>
+                    <!--                    <includes>-->
+                    <!--                        <include>**/runners/*Runner*.java</include>-->
+                    <!--                        &lt;!&ndash; runners package altinda-->
+                    <!--                             calismasini istedigimiz Runner'larin-->
+                    <!--                             isimlerindeki ortak bolumu yaziyoruz&ndash;&gt;-->
+                    <!--                    </includes>-->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>xmlFiles/RunnerParallel.xml</suiteXmlFile>
+                        <!--                        <suiteXmlFile>xmlFiles/RunnerParallelsmoke.xml</suiteXmlFile>-->
+                        <!--                        <suiteXmlFile>xmlFiles/RunnerParallelregression.xml</suiteXmlFile>-->
+                    </suiteXmlFiles>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin> <!-- Paralel calismayi organize ediyor -->
+        </plugins>
+    </build>
+
+</project>
